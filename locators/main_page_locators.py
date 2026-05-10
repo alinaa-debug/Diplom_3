@@ -10,7 +10,7 @@ class MainPageLocators:
 
     INGREDIENT = (By.XPATH, "//p[text()='Флюоресцентная булка R2-D3']/ancestor::a")
 
-    COUNTER = (By.XPATH, "//p[@class='counter_counter__num__3nue1']")
+    COUNTER = (By.XPATH, "//a[contains(@href, '/61c0c5a71d1f82001bdaaa70')]//p[(@class='counter_counter__num__3nue1')]")
 
     CONSTRUCTOR = (By.XPATH, "//ul[@class,'BurgerConstructor_basket__list__l9dp_']")
 
