@@ -1,6 +1,5 @@
 from locators.order_feed_page_locators import OrderFeedPageLocators
 
-
 class TestOrderFeed:
 
     def test_total_all_time_increases(self, created_order):
@@ -13,7 +12,6 @@ class TestOrderFeed:
         page.open_feed()
         after = int(page.get_total_all_time())
         assert after > before
-
 
     def test_total_today_increases(self, created_order):
         page = created_order
