@@ -1,37 +1,54 @@
+from data.data import BASE_URL, FEED_URL
 from pages.main_page import MainPage
-from locators.main_page_locators import MainPageLocators
-from selenium.webdriver.support.ui import WebDriverWait
 
 class TestMainPage:
-    def test_constructor_navigation(self, driver2):
-        page = MainPage(driver2)
-        page.click_constructor()
-        assert page.is_constructor_title_visible()
 
-    def test_order_feed_navigation(self, driver):
-        page = MainPage(driver)
-        page.click_order_feed()
-        assert page.is_order_feed_title_visible()
+    def test_click_constructor_tab_opens_constructor_page(self, driver):
+        
+        main_page = MainPage(driver)
 
-    def test_modal_opens(self, driver):
-        page = MainPage(driver)
-        page.open_ingredient()
-        assert page.is_modal_open()
+        main_page.open(FEED_URL)
+        main_page.click_constructor_button()
+        
+        main_page.wait_url_constructor()
+        assert main_page.get_current_url() == BASE_URL
 
-    def test_modal_closes(self, driver):
-        page = MainPage(driver)
-        page.open_ingredient()
-        page.close_modal()
-        assert page.is_modal_closed()
+    def test_click_order_feed_tab_opens_feed_page(self, driver):
+        main_page = MainPage(driver)
 
-    def test_counter_increases(self, driver):
-        page = MainPage(driver)
-        before = page.get_counter_value()
-        page.drag_and_drop(
-            MainPageLocators.INGREDIENT,
-            MainPageLocators.DROP_AREA
-        )
-        WebDriverWait(driver, 10).until(
-            lambda d: page.get_counter_value() > before
-        )
-        assert page.get_counter_value() > before
+        main_page.open(BASE_URL)
+        main_page.click_order_button()
+
+        main_page.wait_url_order()
+        assert main_page.get_current_url() == FEED_URL
+
+
+    def test_click_ingredient_opens_details_popup(self, driver):
+        main_page = MainPage(driver)
+
+        main_page.open(BASE_URL)
+        main_page.click_ingredient()
+
+        assert main_page.get_details_ingredients()
+
+    def test_close_ingredient_popup_by_click_cross(self, driver):
+        main_page = MainPage(driver)
+
+        main_page.open(BASE_URL)
+
+        main_page.click_ingredient()
+        main_page.get_details_ingredients()
+
+        main_page.close_details_ingredients()
+
+        assert main_page.wait_close_details_ingredient()
+
+    def test_counter_increases_after_adding_ingredient(self, driver):
+        main_page = MainPage(driver)
+
+        main_page.open(BASE_URL)
+
+        main_page.add_ingredient_to_basket()
+        main_page.wait_for_ingredient_count_changing()
+
+        assert main_page.check_counter_of_ingredients() == '2'

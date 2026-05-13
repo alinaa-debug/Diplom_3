@@ -1,50 +1,63 @@
 from pages.base_page import BasePage
 from locators.main_page_locators import MainPageLocators
+from data.data import BASE_URL, FEED_URL
 
 class MainPage(BasePage):
-    def click_constructor(self):
 
-        self.click_element(MainPageLocators.CONSTRUCTOR_TAB)
+    def click_constructor_button(self):
+        self.click(MainPageLocators.CONSTRUCTOR_TAB)
+     
+    def wait_url_constructor(self):
+        return self.wait_for_url(BASE_URL)
+    
+    def wait_url_order(self):
+        return self.wait_for_url(FEED_URL)
+    
+    def click_order_button(self):
+        self.click(MainPageLocators.ORDER_FEED_TAB)
+    
+    def click_ingredient(self):
+        self.wait_visible(MainPageLocators.BUN_ITEM)
+        self.click(MainPageLocators.BUN_ITEM)
 
-    def click_order_feed(self):
+    def get_details_ingredients(self):    
+        return self.wait_visible(MainPageLocators.INGREDIENT_DETAILS)
+    
 
-        self.click_element(MainPageLocators.ORDER_FEED_TAB)
+    def close_details_ingredients(self):    
+        return self.click(MainPageLocators.DETAILS_CLOSE_BUTTON)
+    
 
-    def open_ingredient(self):
+    def wait_close_details_ingredient(self):
+        return self.wait_invisible(MainPageLocators.INGREDIENT_DETAILS)
+    
+    
+    def add_ingredient_to_basket(self):
+        return self.drag_and_drop_ingredient(MainPageLocators.BUN_ITEM , MainPageLocators.CONSTRUCTOR_BASKET)
 
-        self.click_element(MainPageLocators.INGREDIENT)
+    def check_counter_of_ingredients(self):
+        return self.text(MainPageLocators.INGREDIENT_COUNTER)    
 
-    def close_modal(self):
 
-        self.click_element(MainPageLocators.CLOSE_MODAL)
+    def wait_for_ingredient_count_changing(self):    
+        return self.wait_visible(MainPageLocators.INGREDIENT_COUNTER)
+    
 
-    def is_constructor_title_visible(self):
+    def get_order_number(self):
 
-        return self.is_visible(MainPageLocators.CONSTRUCTOR_TITLE)
+        self.scroll_to_element(self.wait_visible(MainPageLocators.BUN_ITEM))
+        self.drag_and_drop_ingredient(MainPageLocators.BUN_ITEM, MainPageLocators.CONSTRUCTOR_BASKET)
 
-    def is_order_feed_title_visible(self):
+        self.click(MainPageLocators.PLACE_ORDER_BUTTON)
 
-        return self.is_visible(MainPageLocators.ORDER_FEED_TITLE)
+        self.wait_visible(MainPageLocators.MODAL_WINDOW)
+        self.wait_invisible(MainPageLocators.DEFAULT_ORDER_NUMBER)
+        order_number = self.text(MainPageLocators.ORDER_NUMBER)
+        self.click(MainPageLocators.CLOSE_MODAL)
+        return order_number
+    
 
-    def is_modal_open(self):
 
-        return self.is_visible(MainPageLocators.MODAL)
-
-    def is_modal_closed(self):
-
-        return self.is_invisible(MainPageLocators.MODAL)
-
-    def get_counter_value(self):
-
-        text = self.get_first_element_text(MainPageLocators.COUNTER)
-        return int(text) if text else 0
-
-    def add_ingredient_to_constructor(self):
-
-        self.drag_and_drop(
-            MainPageLocators.INGREDIENT,
-            MainPageLocators.DROP_AREA
-        )
 
 
 

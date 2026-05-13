@@ -1,92 +1,62 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
+from locators.main_page_locators import MainPageLocators
 
 class BasePage:
 
     def __init__(self, driver):
         self.driver = driver
+    
+    def get_current_url(self):
+        return self.driver.current_url
+    
+    def wait_for_url(self, url):
+        return WebDriverWait(self.driver, 10).until(EC.url_to_be(url))
+    
+    
+    def scroll_to_element(self, element):
+        self.driver.execute_script("arguments[0].scrollIntoView();", element)
+       
+    def find_locator(self, locator):
+        return self.driver.find_element(*locator)
 
-    def open_page(self, url):
+    def open(self, url):
         self.driver.get(url)
 
-    def find_element(self, locator, timeout=10):
-        return WebDriverWait(self.driver, timeout).until(
+    def wait_visible(self, locator):
+        return WebDriverWait(self.driver, 10).until(
             EC.visibility_of_element_located(locator)
         )
 
-    def click_element(self, locator, timeout=10):
+    def click(self, locator):
+        self.wait_overlay_disappear() 
+        element = self.wait_visible(locator)
+        self.scroll_to_element(element)
+        WebDriverWait(self.driver, 10).until(
+        EC.element_to_be_clickable(locator))
+        element.click()
 
-        WebDriverWait(self.driver, timeout).until(
-            EC.element_to_be_clickable(locator)
-        ).click()
+    def text(self, locator):
+        return self.find_locator(locator).text
 
-    def send_keys(self, locator, text, timeout=10):
-
-        element = WebDriverWait(self.driver, timeout).until(
-            EC.visibility_of_element_located(locator)
-        )
-        element.send_keys(text)
-
-    def is_visible(self, locator, timeout=10):
-
-        return WebDriverWait(self.driver, timeout).until(
-            EC.visibility_of_element_located(locator)
-        ).is_displayed()
-
-    def is_invisible(self, locator, timeout=10):
-        return WebDriverWait(self.driver, timeout).until(
+    def wait_invisible(self, locator):
+        return WebDriverWait(self.driver, 10).until(
             EC.invisibility_of_element_located(locator)
         )
-
-    def get_first_element_text(self, locator, timeout=10):
-
-        elements = WebDriverWait(self.driver, timeout).until(
-            EC.presence_of_all_elements_located(locator)
+    
+    def drag_and_drop_ingredient(self, ingridients_locator, constructor_locator):
+        ingridients = self.wait_visible(ingridients_locator)
+        constructor = self.wait_visible(constructor_locator)
+        actions = ActionChains(self.driver)
+        actions.click_and_hold(ingridients).move_to_element(constructor).release().perform()
+        self.driver.execute_script("arguments[1].dispatchEvent(new Event('drop', { bubbles: true }));", ingridients, constructor)
+    
+    def wait_overlay_disappear(self):
+        WebDriverWait(self.driver, 10).until(
+        EC.invisibility_of_element_located(
+            MainPageLocators.OVERLAY
         )
-        return elements[0].text if elements else None
-
-    def scroll_to_element(self, locator):
-
-        element = self.find_element(locator)
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView({block: 'center'});",
-            element
-        )
-
-
-    def drag_and_drop(self, source_locator, target_locator):
-
-        self.find_element_with_wait(source_locator)
-        self.find_element_with_wait(target_locator)
-
-        element_from = self.driver.find_element(*source_locator)
-        element_to = self.driver.find_element(*target_locator)
-
-        self.driver.execute_script("""
-            var source = arguments[0];
-            var target = arguments[1];
-
-            var evt = document.createEvent("DragEvent");
-            evt.initMouseEvent("dragstart", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-            source.dispatchEvent(evt);
-
-            evt = document.createEvent("DragEvent");
-            evt.initMouseEvent("dragenter", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-            target.dispatchEvent(evt);
-
-            evt = document.createEvent("DragEvent");
-            evt.initMouseEvent("dragover", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-            target.dispatchEvent(evt);
-
-            evt = document.createEvent("DragEvent");
-            evt.initMouseEvent("drop", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-            target.dispatchEvent(evt);
-
-            evt = document.createEvent("DragEvent");
-            evt.initMouseEvent("dragend", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-            source.dispatchEvent(evt);
-        """, element_from, element_to)
-
-
-
-
+    )
+    
+    
