@@ -1,7 +1,7 @@
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-from locators.main_page_locators import MainPageLocators
+
 
 class BasePage:
 
@@ -12,9 +12,13 @@ class BasePage:
         return self.driver.current_url
     
     def wait_for_url(self, url):
-        return WebDriverWait(self.driver, 10).until(EC.url_to_be(url))
+        return WebDriverWait(self.driver, 20).until(EC.url_to_be(url))
     
-    
+    def wait_clickable(self,locator):
+        return WebDriverWait(self.driver, 20).until(
+            EC.element_to_be_clickable(locator)
+        )
+
     def scroll_to_element(self, element):
         self.driver.execute_script("arguments[0].scrollIntoView();", element)
        
@@ -25,15 +29,15 @@ class BasePage:
         self.driver.get(url)
 
     def wait_visible(self, locator):
-        return WebDriverWait(self.driver, 10).until(
+        return WebDriverWait(self.driver, 20).until(
             EC.visibility_of_element_located(locator)
         )
 
     def click(self, locator):
-        self.wait_overlay_disappear() 
+
         element = self.wait_visible(locator)
         self.scroll_to_element(element)
-        WebDriverWait(self.driver, 10).until(
+        WebDriverWait(self.driver, 20).until(
         EC.element_to_be_clickable(locator))
         element.click()
 
@@ -41,7 +45,7 @@ class BasePage:
         return self.find_locator(locator).text
 
     def wait_invisible(self, locator):
-        return WebDriverWait(self.driver, 10).until(
+        return WebDriverWait(self.driver, 20).until(
             EC.invisibility_of_element_located(locator)
         )
     
@@ -51,12 +55,6 @@ class BasePage:
         actions = ActionChains(self.driver)
         actions.click_and_hold(ingridients).move_to_element(constructor).release().perform()
         self.driver.execute_script("arguments[1].dispatchEvent(new Event('drop', { bubbles: true }));", ingridients, constructor)
-    
-    def wait_overlay_disappear(self):
-        WebDriverWait(self.driver, 10).until(
-        EC.invisibility_of_element_located(
-            MainPageLocators.OVERLAY
-        )
-    )
+  
     
     

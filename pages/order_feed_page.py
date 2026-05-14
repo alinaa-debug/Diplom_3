@@ -28,12 +28,12 @@ class OrderPage(BasePage):
         return self.text(OrderFeedPageLocators.TODAY_DONE)
     
     def in_progress(self):
-        return self.wait_visible(OrderFeedPageLocators.ORDERS_IN_PROGRESS)
+        return self.wait_visible(OrderFeedPageLocators.ORDER_IN_PROGRESS)
 
     
     def text_in_progress(self):
-        self.wait_visible(OrderFeedPageLocators.ORDERS_IN_PROGRESS)
-        return self.text(OrderFeedPageLocators.ORDERS_IN_PROGRESS)
+        self.wait_visible(OrderFeedPageLocators.ORDER_IN_PROGRESS)
+        return self.text(OrderFeedPageLocators.ORDER_IN_PROGRESS)
 
     
 

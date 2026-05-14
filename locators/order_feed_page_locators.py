@@ -9,6 +9,6 @@ class OrderFeedPageLocators:
     TODAY_DONE = (By.XPATH, "//p[text()='Выполнено за сегодня:']/following-sibling::p")
 
     ALL_ORDERS_DONE_TEXT = (By.XPATH, '//li[text()="Все текущие заказы готовы!"]')
-
-    ORDERS_IN_PROGRESS = (By.XPATH, '//*[contains(@class,"orderListReady")]//li[contains(@class,"digits-default")]')
+    
+    ORDER_IN_PROGRESS = (By.XPATH, '//*[contains(@class,"orderListReady")]//li[contains(@class,"digits-default")]')
 

@@ -14,6 +14,7 @@ class MainPage(BasePage):
         return self.wait_for_url(FEED_URL)
     
     def click_order_button(self):
+        self.wait_clickable(MainPageLocators.ORDER_FEED_TAB)
         self.click(MainPageLocators.ORDER_FEED_TAB)
     
     def click_ingredient(self):
@@ -45,7 +46,6 @@ class MainPage(BasePage):
 
     def get_order_number(self):
 
-        self.scroll_to_element(self.wait_visible(MainPageLocators.BUN_ITEM))
         self.drag_and_drop_ingredient(MainPageLocators.BUN_ITEM, MainPageLocators.CONSTRUCTOR_BASKET)
 
         self.click(MainPageLocators.PLACE_ORDER_BUTTON)
@@ -56,7 +56,6 @@ class MainPage(BasePage):
         self.click(MainPageLocators.CLOSE_MODAL)
         return order_number
     
-
 
 
 

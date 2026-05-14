@@ -32,4 +32,4 @@ class MainPageLocators:
     INGRIDIENT_BUN_DETAILS = (By.XPATH, "//section[contains(@class,'Modal_modal_opened')]//p[text()='Флюоресцентная булка R2-D3']") 
     DETAILS_CLOSE_BUTTON = (By.XPATH, "//button[contains(@class, 'Modal_modal__close')]") 
     
-    OVERLAY = (By.CLASS_NAME, "Modal_modal_overlay__x2ZCr")
+   
